@@ -100,9 +100,9 @@ public class Program
     private async Task OnReaction(Cacheable<IUserMessage, ulong> messageEntity,
         Cacheable<IMessageChannel, ulong> channelEntity, SocketReaction reaction)
     {
-        var message = await messageEntity.GetOrDownloadAsync();
-
         if (reaction.User.Value.IsBot) return;
+
+        var message = await messageEntity.GetOrDownloadAsync();
         if (message.Author.Id != _client.CurrentUser.Id) return;
 
         // Find the calculation that this reaction is for
@@ -113,13 +113,18 @@ public class Program
 
         if (reaction.Emote.Equals(new Emoji("🔁")))
         {
-            // switch display mode
+            _calculations.Remove(calculation);
             calculation.DisplayMode = calculation.DisplayMode == CalculationDisplayMode.Fraction
                 ? CalculationDisplayMode.Decimal
                 : CalculationDisplayMode.Fraction;
+            _calculations.Add(calculation);
 
-            // update message
             await calculation.ResponseMessage.ModifyAsync(m => { m.Embed = calculation.ToEmbed(); });
+
+            var reactionUsers =
+                await calculation.ResponseMessage.GetReactionUsersAsync(new Emoji("🔁"), 5).FlattenAsync();
+            foreach (var user in reactionUsers.Where(u => u.Id != _client.CurrentUser.Id))
+                await calculation.ResponseMessage.RemoveReactionAsync(new Emoji("🔁"), user);
         }
 
         if (reaction.Emote.Equals(new Emoji("📈")))

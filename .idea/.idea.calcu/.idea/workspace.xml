@@ -5,9 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5d26d015-a49c-468b-8602-39781d255361" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Calcu/CalculationDisplayMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.calcu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.calcu/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Calcu/Calculation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Calcu/Calculation.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Calcu/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Calcu/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,7 +74,7 @@
       <updated>1686996030273</updated>
       <workItem from="1686996032478" duration="3163000" />
       <workItem from="1687013448184" duration="652000" />
-      <workItem from="1687016420749" duration="8473000" />
+      <workItem from="1687016420749" duration="8823000" />
     </task>
     <servers />
   </component>
@@ -90,5 +87,24 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Calcu/Program.cs</url>
+          <line>193</line>
+          <properties documentPath="C:\Repos\calcu\Calcu\Program.cs" initialLine="187" containingFunctionPresentation="method 'TryPerformCalculation'">
+            <startOffsets>
+              <option value="6405" />
+            </startOffsets>
+            <endOffsets>
+              <option value="6419" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
