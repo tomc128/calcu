@@ -85,8 +85,32 @@ public class Program
         await Task.Delay(-1);
     }
 
-    private Task OnMessage(SocketMessage arg)
+    private async Task OnMessage(SocketMessage arg)
     {
-        return Task.CompletedTask;
+        // Ignore system and non-user messages
+        if (arg is not SocketUserMessage message) return;
+        if (message.Source != MessageSource.User) return;
+
+        // Only respond to messages that mention the bot
+        if (message.MentionedUsers.All(u => u.Id != _client.CurrentUser.Id)) return;
+
+        // Remove the mention from the message
+        var content = message.Content.Replace($"<@{_client.CurrentUser.Id}>", "").Trim();
+
+        // Ignore empty messages
+        if (string.IsNullOrWhiteSpace(content)) return;
+
+        try
+        {
+            var result = _parser.Read(content).Evaluate(_environment);
+            var number = new Number(result);
+
+            await message.ReplyAsync($"{number}");
+            await message.AddReactionAsync(new Emoji("✅"));
+        }
+        catch
+        {
+            await message.AddReactionAsync(new Emoji("❌"));
+        }
     }
 }
