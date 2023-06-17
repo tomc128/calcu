@@ -10,7 +10,6 @@ WORKDIR "/src/Calcu"
 RUN dotnet build "Calcu.csproj" -c Release -o /app/build
 
 FROM build AS publish
-COPY ["lib/MathsParser.dll", "/app/build/lib/"]
 RUN dotnet publish "Calcu.csproj" -c Release -o /app/publish
 
 FROM base AS final
