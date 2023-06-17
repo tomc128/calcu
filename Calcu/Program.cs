@@ -9,6 +9,8 @@ using TokenType = Discord.TokenType;
 public class Program
 {
     private readonly List<Calculation> _calculations = new();
+
+    private Number _ans = new(0);
     private DiscordSocketClient _client;
     private Environment _environment;
     private Parser _parser;
@@ -60,6 +62,7 @@ public class Program
             { "π", Math.PI },
             { "e", Math.E },
             { "x", 2 },
+            // ans is updated after every calculation
         };
 
         _environment = new Environment(functions, variables);
@@ -153,6 +156,8 @@ public class Program
     {
         try
         {
+            _environment.Variables["ans"] = _ans.Value;
+
             var node = _parser.Read(content);
             var result = node.Evaluate(_environment);
             var number = new Number(result);
@@ -160,6 +165,8 @@ public class Program
             var reply = await replyMessage.ReplyAsync(embed: BuildEmbed(content, number),
                 allowedMentions: AllowedMentions.None);
             await reactMessage.AddReactionAsync(new Emoji("✅"));
+
+            _ans = number;
 
             return new Calculation(replyMessage, reply, content, number, node);
         }
@@ -173,10 +180,10 @@ public class Program
 
     private Embed BuildEmbed(string expression, Number result)
     {
+        // TODO: add precision to result in footer?
         return new EmbedBuilder
         {
             Title = result.ToString(),
-            // Description = expression,
         }.Build();
     }
 
