@@ -144,14 +144,27 @@ public class Program
             var result = _parser.Read(content).Evaluate(_environment);
             var number = new Number(result);
 
+            // return await replyMessage.ReplyAsync($"{number}", allowedMentions: AllowedMentions.None);
+            var reply = await replyMessage.ReplyAsync(embed: BuildEmbed(content, number),
+                allowedMentions: AllowedMentions.None);
             await reactMessage.AddReactionAsync(new Emoji("✅"));
-            return await replyMessage.ReplyAsync($"{number}", allowedMentions: AllowedMentions.None);
+            return reply;
         }
-        catch
+        catch (Exception ex)
         {
+            Console.WriteLine(ex);
             await reactMessage.AddReactionAsync(new Emoji("❌"));
             return null;
         }
+    }
+
+    private Embed BuildEmbed(string expression, Number result)
+    {
+        return new EmbedBuilder
+        {
+            Title = result.ToString(),
+            Description = expression,
+        }.Build();
     }
 
     private async Task AddReactionControls(IUserMessage message)
