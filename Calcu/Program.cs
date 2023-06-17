@@ -2,7 +2,6 @@
 using Discord;
 using Discord.WebSocket;
 using MathsParser;
-using MathsParser.Nodes;
 using Environment = MathsParser.Environment;
 using TokenType = Discord.TokenType;
 
@@ -55,6 +54,9 @@ public class Program
             { "log", new Func<double, double, double>(Math.Log) },
             { "ln", new Func<double, double>(x => Math.Log(x, Math.E)) },
             { "quadratic", CustomMath.Quadratic },
+            { "factorial", CustomMath.Factorial },
+            { "P", CustomMath.Permutation },
+            { "C", CustomMath.Combination },
         };
 
         var variables = new Dictionary<string, double>
@@ -179,29 +181,19 @@ public class Program
         }
     }
 
-    private Embed BuildEmbed(string expression, Number result)
+    private static Embed BuildEmbed(string expression, Number result)
     {
         // TODO: add precision to result in footer?
         return new EmbedBuilder
         {
             Title = result.ToString(),
+            Color = Color.Green,
         }.Build();
     }
 
-    private async Task AddReactionControls(IUserMessage message)
+    private static async Task AddReactionControls(IUserMessage message)
     {
         await message.AddReactionAsync(new Emoji("➗")); // Switch between fraction and decimal
         await message.AddReactionAsync(new Emoji("📈")); // Graph the function
-    }
-
-    private bool CanGraph(Node node)
-    {
-        return node switch
-        {
-            { Type: NodeType.Number } => true,
-            BinaryNode binary => CanGraph(binary.Left) && CanGraph(binary.Right),
-            // TODO
-            _ => false,
-        };
     }
 }
