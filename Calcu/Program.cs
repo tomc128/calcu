@@ -139,8 +139,13 @@ public class Program
         // Ignore system and non-user messages
         if (arg is not SocketUserMessage { Source: MessageSource.User } message) return;
 
-        // Only respond to messages that mention the bot
-        if (message.MentionedUsers.All(u => u.Id != _client.CurrentUser.Id)) return;
+        // Only respond to messages that mention the bot, are in a channel called "calcu", or are in a DM
+        var canRun = message.MentionedUsers.Any(u => u.Id == _client.CurrentUser.Id) ||
+                     (message.Channel is SocketGuildChannel guildChannel &&
+                      guildChannel.Name.Equals("calcu", StringComparison.OrdinalIgnoreCase)) ||
+                     message.Channel is SocketDMChannel;
+
+        if (!canRun) return;
 
         // Remove the mention from the message
         var content = message.Content.Replace($"<@{_client.CurrentUser.Id}>", "").Trim();

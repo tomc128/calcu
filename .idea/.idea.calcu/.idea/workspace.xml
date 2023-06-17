@@ -4,9 +4,7 @@
     <projectFile>Calcu/Calcu.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d26d015-a49c-468b-8602-39781d255361" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Calcu/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Calcu/Program.cs" afterDir="false" />
-    </list>
+    <list default="true" id="5d26d015-a49c-468b-8602-39781d255361" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -74,7 +72,7 @@
       <updated>1686996030273</updated>
       <workItem from="1686996032478" duration="3163000" />
       <workItem from="1687013448184" duration="652000" />
-      <workItem from="1687016420749" duration="9169000" />
+      <workItem from="1687016420749" duration="9521000" />
     </task>
     <servers />
   </component>
