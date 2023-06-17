@@ -74,10 +74,11 @@ public class Program
         await _client.LoginAsync(TokenType.Bot, token);
         await _client.StartAsync();
 
-        _client.Ready += () =>
+        _client.Ready += async () =>
         {
             Log("Bot is connected!");
-            return Task.CompletedTask;
+            await _client.SetStatusAsync(UserStatus.Online);
+            await _client.SetActivityAsync(new Game("with numbers, @ me!"));
         };
 
         _client.MessageReceived += OnMessage;
@@ -88,8 +89,7 @@ public class Program
     private async Task OnMessage(SocketMessage arg)
     {
         // Ignore system and non-user messages
-        if (arg is not SocketUserMessage message) return;
-        if (message.Source != MessageSource.User) return;
+        if (arg is not SocketUserMessage { Source: MessageSource.User } message) return;
 
         // Only respond to messages that mention the bot
         if (message.MentionedUsers.All(u => u.Id != _client.CurrentUser.Id)) return;
@@ -97,20 +97,42 @@ public class Program
         // Remove the mention from the message
         var content = message.Content.Replace($"<@{_client.CurrentUser.Id}>", "").Trim();
 
-        // Ignore empty messages
-        if (string.IsNullOrWhiteSpace(content)) return;
+        IUserMessage replyMessage = message;
+        IUserMessage reactMessage = message;
 
+        // If message is empty, try to get the previous message from the channel
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            var possiblePreviousMessage = (await message.Channel.GetMessagesAsync(2).FlattenAsync()).Last();
+            if (possiblePreviousMessage is not IUserMessage { Source: MessageSource.User } previousMessage) return;
+
+            content = previousMessage.Content.Trim();
+
+            // If the previous message mentions the bot, ignore it
+            if (content.Contains($"<@{_client.CurrentUser.Id}>")) return;
+
+            // If the previous message is also empty, ignore it
+            if (string.IsNullOrWhiteSpace(content)) return;
+
+            replyMessage = previousMessage;
+        }
+
+        await TryPerformCalculation(reactMessage, replyMessage, content);
+    }
+
+    private async Task TryPerformCalculation(IUserMessage reactMessage, IUserMessage replyMessage, string content)
+    {
         try
         {
             var result = _parser.Read(content).Evaluate(_environment);
             var number = new Number(result);
 
-            await message.ReplyAsync($"{number}");
-            await message.AddReactionAsync(new Emoji("✅"));
+            await replyMessage.ReplyAsync($"{number}");
+            await reactMessage.AddReactionAsync(new Emoji("✅"));
         }
         catch
         {
-            await message.AddReactionAsync(new Emoji("❌"));
+            await reactMessage.AddReactionAsync(new Emoji("❌"));
         }
     }
 }
