@@ -88,9 +88,15 @@ public class Program
         await Task.Delay(-1);
     }
 
-    private async Task OnReaction(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2,
-        SocketReaction arg3)
+    private async Task OnReaction(Cacheable<IUserMessage, ulong> messageEntity,
+        Cacheable<IMessageChannel, ulong> channelEntity, SocketReaction reaction)
     {
+        var message = await messageEntity.GetOrDownloadAsync();
+
+        if (reaction.User.Value.IsBot) return;
+        if (message.Author.Id != _client.CurrentUser.Id) return;
+
+        if (reaction.Emote.Equals(new Emoji("➗"))) Console.WriteLine("Switch to decimal/fraction");
     }
 
     private async Task OnMessage(SocketMessage arg)
