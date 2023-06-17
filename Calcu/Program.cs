@@ -111,7 +111,17 @@ public class Program
 
         var calculation = calculations.First();
 
-        if (reaction.Emote.Equals(new Emoji("➗"))) Console.WriteLine("Switch to decimal/fraction");
+        if (reaction.Emote.Equals(new Emoji("🔁")))
+        {
+            // switch display mode
+            calculation.DisplayMode = calculation.DisplayMode == CalculationDisplayMode.Fraction
+                ? CalculationDisplayMode.Decimal
+                : CalculationDisplayMode.Fraction;
+
+            // update message
+            await calculation.ResponseMessage.ModifyAsync(m => { m.Embed = calculation.ToEmbed(); });
+        }
+
         if (reaction.Emote.Equals(new Emoji("📈")))
         {
             // TODO: graph
@@ -165,13 +175,19 @@ public class Program
             var result = node.Evaluate(_environment);
             var number = new Number(result);
 
-            var reply = await replyMessage.ReplyAsync(embed: BuildEmbed(content, number),
+            var calculation = new Calculation(replyMessage, content, number, node);
+
+            var reply = await replyMessage.ReplyAsync(embed: calculation.ToEmbed(),
                 allowedMentions: AllowedMentions.None);
             await reactMessage.AddReactionAsync(new Emoji("✅"));
 
+            calculation.ResponseMessage = reply;
+
+            await AddReactionControls(reply);
+
             _ans = number;
 
-            return new Calculation(replyMessage, reply, content, number, node);
+            return calculation;
         }
         catch (Exception ex)
         {
@@ -181,19 +197,9 @@ public class Program
         }
     }
 
-    private static Embed BuildEmbed(string expression, Number result)
-    {
-        // TODO: add precision to result in footer?
-        return new EmbedBuilder
-        {
-            Title = result.ToString(),
-            Color = Color.Green,
-        }.Build();
-    }
-
     private static async Task AddReactionControls(IUserMessage message)
     {
-        await message.AddReactionAsync(new Emoji("➗")); // Switch between fraction and decimal
-        await message.AddReactionAsync(new Emoji("📈")); // Graph the function
+        await message.AddReactionAsync(new Emoji("🔁")); // Switch between fraction and decimal
+        // await message.AddReactionAsync(new Emoji("📈")); // Graph the function
     }
 }
