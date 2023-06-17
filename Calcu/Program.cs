@@ -83,7 +83,14 @@ public class Program
 
         _client.MessageReceived += OnMessage;
 
+        _client.ReactionAdded += OnReaction;
+
         await Task.Delay(-1);
+    }
+
+    private async Task OnReaction(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2,
+        SocketReaction arg3)
+    {
     }
 
     private async Task OnMessage(SocketMessage arg)
@@ -117,22 +124,33 @@ public class Program
             replyMessage = previousMessage;
         }
 
-        await TryPerformCalculation(reactMessage, replyMessage, content);
+        var calculationMessage = await TryPerformCalculation(reactMessage, replyMessage, content);
+        if (calculationMessage is null) return;
+
+        await AddReactionControls(calculationMessage);
     }
 
-    private async Task TryPerformCalculation(IUserMessage reactMessage, IUserMessage replyMessage, string content)
+    private async Task<IUserMessage?> TryPerformCalculation(IUserMessage reactMessage, IUserMessage replyMessage,
+        string content)
     {
         try
         {
             var result = _parser.Read(content).Evaluate(_environment);
             var number = new Number(result);
 
-            await replyMessage.ReplyAsync($"{number}");
             await reactMessage.AddReactionAsync(new Emoji("✅"));
+            return await replyMessage.ReplyAsync($"{number}", allowedMentions: AllowedMentions.None);
         }
         catch
         {
             await reactMessage.AddReactionAsync(new Emoji("❌"));
+            return null;
         }
+    }
+
+    private async Task AddReactionControls(IUserMessage message)
+    {
+        await message.AddReactionAsync(new Emoji("➗")); // Switch between fraction and decimal
+        await message.AddReactionAsync(new Emoji("📈")); // Graph the function
     }
 }
