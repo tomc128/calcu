@@ -20,13 +20,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="MathsParser">
-        <HintPath>..\..\maths-parser\MathsParser\bin\Debug\net7.0\MathsParser.dll</HintPath>
-      </Reference>
+      <None Include="bin\Debug\net7.0\token.txt" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="bin\Debug\net7.0\token.txt" />
+      <Reference Include="MathsParser">
+        <HintPath>lib\MathsParser.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>
