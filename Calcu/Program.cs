@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using MathsParser;
+using MathsParser.Nodes;
 using Environment = MathsParser.Environment;
 using TokenType = Discord.TokenType;
 
@@ -97,7 +98,19 @@ public class Program
         if (message.Author.Id != _client.CurrentUser.Id) return;
 
         if (reaction.Emote.Equals(new Emoji("➗"))) Console.WriteLine("Switch to decimal/fraction");
+        if (reaction.Emote.Equals(new Emoji("📈")))
+        {
+            // get message that this message replied to
+            var callMessage = await message.Channel.GetMessageAsync(message.ReferencedMessage.Id);
+            if (callMessage is not IUserMessage { Source: MessageSource.User } expressionMessage) return;
+
+            var expression = expressionMessage.Content.Replace($"<@{_client.CurrentUser.Id}>", "").Trim();
+
+            var result = _parser.Read(expression).Evaluate(_environment);
+            // TODO: graph the expression
+        }
     }
+
 
     private async Task OnMessage(SocketMessage arg)
     {
@@ -133,7 +146,7 @@ public class Program
         var calculationMessage = await TryPerformCalculation(reactMessage, replyMessage, content);
         if (calculationMessage is null) return;
 
-        await AddReactionControls(calculationMessage);
+        // await AddReactionControls(calculationMessage);
     }
 
     private async Task<IUserMessage?> TryPerformCalculation(IUserMessage reactMessage, IUserMessage replyMessage,
@@ -144,7 +157,6 @@ public class Program
             var result = _parser.Read(content).Evaluate(_environment);
             var number = new Number(result);
 
-            // return await replyMessage.ReplyAsync($"{number}", allowedMentions: AllowedMentions.None);
             var reply = await replyMessage.ReplyAsync(embed: BuildEmbed(content, number),
                 allowedMentions: AllowedMentions.None);
             await reactMessage.AddReactionAsync(new Emoji("✅"));
@@ -163,7 +175,7 @@ public class Program
         return new EmbedBuilder
         {
             Title = result.ToString(),
-            Description = expression,
+            // Description = expression,
         }.Build();
     }
 
@@ -171,5 +183,16 @@ public class Program
     {
         await message.AddReactionAsync(new Emoji("➗")); // Switch between fraction and decimal
         await message.AddReactionAsync(new Emoji("📈")); // Graph the function
+    }
+
+    private bool CanGraph(Node node)
+    {
+        return node switch
+        {
+            { Type: NodeType.Number } => true,
+            BinaryNode binary => CanGraph(binary.Left) && CanGraph(binary.Right),
+            // TODO
+            _ => false,
+        };
     }
 }
