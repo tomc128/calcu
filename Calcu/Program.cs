@@ -54,6 +54,7 @@ public class Program
             { "clamp", new Func<double, double, double, double>(Math.Clamp) },
             { "log", new Func<double, double, double>(Math.Log) },
             { "ln", new Func<double, double>(x => Math.Log(x, Math.E)) },
+            { "quadratic", CustomMath.Quadratic },
         };
 
         var variables = new Dictionary<string, double>
