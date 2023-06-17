@@ -188,7 +188,7 @@ public class Program
 
             calculation.ResponseMessage = reply;
 
-            await AddReactionControls(reply);
+            await AddReactionControls(calculation);
 
             _ans = number;
 
@@ -202,9 +202,11 @@ public class Program
         }
     }
 
-    private static async Task AddReactionControls(IUserMessage message)
+    private static async Task AddReactionControls(Calculation calculation)
     {
-        await message.AddReactionAsync(new Emoji("🔁")); // Switch between fraction and decimal
+        // Only show S->D button if the result is a fraction (i.e. has a denominator)
+        if (calculation.Result.Value.DisplayAsFraction)
+            await calculation.ResponseMessage.AddReactionAsync(new Emoji("🔁")); // Switch between fraction and decimal
         // await message.AddReactionAsync(new Emoji("📈")); // Graph the function
     }
 }
