@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using Calcu;
+using Discord;
 using Discord.WebSocket;
 using MathsParser;
 using MathsParser.Nodes;
@@ -7,6 +8,7 @@ using TokenType = Discord.TokenType;
 
 public class Program
 {
+    private readonly List<Calculation> _calculations = new();
     private DiscordSocketClient _client;
     private Environment _environment;
     private Parser _parser;
@@ -97,17 +99,16 @@ public class Program
         if (reaction.User.Value.IsBot) return;
         if (message.Author.Id != _client.CurrentUser.Id) return;
 
+        // Find the calculation that this reaction is for
+        var calculations = _calculations.Where(c => c.ResponseMessage?.Id == message.Id);
+        if (!calculations.Any()) return;
+
+        var calculation = calculations.First();
+
         if (reaction.Emote.Equals(new Emoji("➗"))) Console.WriteLine("Switch to decimal/fraction");
         if (reaction.Emote.Equals(new Emoji("📈")))
         {
-            // get message that this message replied to
-            var callMessage = await message.Channel.GetMessageAsync(message.ReferencedMessage.Id);
-            if (callMessage is not IUserMessage { Source: MessageSource.User } expressionMessage) return;
-
-            var expression = expressionMessage.Content.Replace($"<@{_client.CurrentUser.Id}>", "").Trim();
-
-            var result = _parser.Read(expression).Evaluate(_environment);
-            // TODO: graph the expression
+            // TODO: graph
         }
     }
 
@@ -143,30 +144,30 @@ public class Program
             replyMessage = previousMessage;
         }
 
-        var calculationMessage = await TryPerformCalculation(reactMessage, replyMessage, content);
-        if (calculationMessage is null) return;
-
-        // await AddReactionControls(calculationMessage);
+        var calculation = await TryPerformCalculation(reactMessage, replyMessage, content);
+        if (calculation.Success) _calculations.Add(calculation);
     }
 
-    private async Task<IUserMessage?> TryPerformCalculation(IUserMessage reactMessage, IUserMessage replyMessage,
+    private async Task<Calculation> TryPerformCalculation(IUserMessage reactMessage, IUserMessage replyMessage,
         string content)
     {
         try
         {
-            var result = _parser.Read(content).Evaluate(_environment);
+            var node = _parser.Read(content);
+            var result = node.Evaluate(_environment);
             var number = new Number(result);
 
             var reply = await replyMessage.ReplyAsync(embed: BuildEmbed(content, number),
                 allowedMentions: AllowedMentions.None);
             await reactMessage.AddReactionAsync(new Emoji("✅"));
-            return reply;
+
+            return new Calculation(replyMessage, reply, content, number, node);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
             await reactMessage.AddReactionAsync(new Emoji("❌"));
-            return null;
+            return new Calculation(replyMessage, content);
         }
     }
 

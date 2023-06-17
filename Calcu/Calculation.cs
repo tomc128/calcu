@@ -22,4 +22,14 @@ public struct Calculation
         Node = node;
         Success = result is not null;
     }
+
+    public Calculation(IUserMessage callMessage, string expression)
+    {
+        CallMessage = callMessage;
+        ResponseMessage = null;
+        Expression = expression;
+        Result = null;
+        Node = null;
+        Success = false;
+    }
 }
