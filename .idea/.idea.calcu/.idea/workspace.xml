@@ -4,7 +4,11 @@
     <projectFile>Calcu/Calcu.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d26d015-a49c-468b-8602-39781d255361" name="Changes" comment="" />
+    <list default="true" id="5d26d015-a49c-468b-8602-39781d255361" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.calcu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.calcu/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Calcu/Calcu.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Calcu/Calcu.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Calcu/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Calcu/Program.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,7 +31,10 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "rider.code.cleanup.on.save": "true",
+    "settings.editor.selected.configurable": "actions.on.save",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -66,7 +73,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1686996030273</updated>
-      <workItem from="1686996032478" duration="300000" />
+      <workItem from="1686996032478" duration="710000" />
     </task>
     <servers />
   </component>
