@@ -4,7 +4,9 @@
     <projectFile>Calcu/Calcu.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d26d015-a49c-468b-8602-39781d255361" name="Changes" comment="" />
+    <list default="true" id="5d26d015-a49c-468b-8602-39781d255361" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.calcu/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.calcu/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -72,7 +74,7 @@
       <updated>1686996030273</updated>
       <workItem from="1686996032478" duration="3163000" />
       <workItem from="1687013448184" duration="652000" />
-      <workItem from="1687016420749" duration="9521000" />
+      <workItem from="1687016420749" duration="10098000" />
     </task>
     <servers />
   </component>
@@ -85,24 +87,5 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Calcu/Program.cs</url>
-          <line>192</line>
-          <properties documentPath="C:\Repos\calcu\Calcu\Program.cs" initialLine="187" containingFunctionPresentation="method 'TryPerformCalculation'">
-            <startOffsets>
-              <option value="6478" />
-            </startOffsets>
-            <endOffsets>
-              <option value="6492" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
