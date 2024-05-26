@@ -14,10 +14,7 @@ public class Program
     private Environment _environment;
     private Parser _parser;
 
-    public static Task Main(string[] args)
-    {
-        return new Program().MainAsync();
-    }
+    public static Task Main(string[] args) => new Program().MainAsync();
 
     private Task Log(LogMessage msg)
     {
@@ -78,7 +75,12 @@ public class Program
 
         Log("Connecting to Discord...");
 
-        var token = await File.ReadAllTextAsync("token.txt");
+        var token = System.Environment.GetEnvironmentVariable("DISCORD_TOKEN");
+        if (string.IsNullOrEmpty(token))
+        {
+            Log("DISCORD_TOKEN environment variable is not set.");
+            return;
+        }
 
         await _client.LoginAsync(TokenType.Bot, token);
         await _client.StartAsync();
