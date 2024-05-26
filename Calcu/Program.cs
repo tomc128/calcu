@@ -1,4 +1,5 @@
-﻿using Calcu;
+﻿using System.Reflection;
+using Calcu;
 using Discord;
 using Discord.WebSocket;
 using MathsParser;
@@ -170,6 +171,16 @@ public class Program
             if (string.IsNullOrWhiteSpace(content)) return;
 
             replyMessage = previousMessage;
+        }
+
+        // Custom commands
+        if (content == "version")
+        {
+            var calcuVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            var mathsParserVersion = Assembly.GetAssembly(typeof(Parser))?.GetName().Version;
+
+            await replyMessage.ReplyAsync($"Calcu v{calcuVersion}, MathsParser v{mathsParserVersion}");
+            return;
         }
 
         var calculation = await TryPerformCalculation(reactMessage, replyMessage, content);
